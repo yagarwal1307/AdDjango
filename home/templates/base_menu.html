@@ -1,0 +1,52 @@
+{% extends "base_bootstrap.html" %}
+{% block navbar %}
+{% load app_tags %}
+<nav class="navbar navbar-default navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+        <a class="navbar-brand" href="/">{{ settings.APP_NAME }}</a>
+    </div>
+    <!-- https://stackoverflow.com/questions/22047251/django-dynamically-get-view-url-and-check-if-its-the-current-page -->
+    <ul class="nav navbar-nav">
+      <li {% if request.resolver_match.app_name == 'ads' %}class="active"{% endif %}>
+          <a href="{% url 'ads:all' %}">Ads</a></li>
+      <li {% if request.resolver_match.app_name == 'polls' %}class="active"{% endif %}>
+          <a href="{% url 'polls:index' %}">Polls</a></li>
+    </ul>
+
+    <ul class="nav navbar-nav navbar-right">
+        {% if user.is_authenticated %}
+        <li>
+        <a href="{% url 'ads:ad_create' %}">Create Ad</a>
+        </li>
+        <li class="dropdown">
+            <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                <img style="width: 25px;" src="{{ user|gravatar:60 }}"/><b class="caret"></b>
+            </a>
+            <ul class="dropdown-menu">
+                <li><a href="{% url 'logout' %}?next={% url 'ads:all' %}">Logout</a></li>
+            </ul>
+        </li>
+        {% else %}
+        <li>
+        <a href="{% url 'login' %}?next={% url 'ads:all' %}">Login</a>
+        </li>
+        {% endif %}
+    </ul>
+
+    {% if request.resolver_match.view_name == 'ads:all' %}
+    <form action="" class="navbar-form navbar-right">
+        <div class="input-group">
+            <input type="Search" placeholder="Search..." name="search" class="form-control" {% if search %} value="{{ search }}" {% endif %} />
+                <div class="input-group-btn">
+                    <button class="btn btn-info">
+                        <span class="glyphicon glyphicon-search"></span>
+                    </button>
+                </div>
+        </div>
+    </form>
+    {% endif %}
+
+  </div>
+</nav>
+{% endblock %}
